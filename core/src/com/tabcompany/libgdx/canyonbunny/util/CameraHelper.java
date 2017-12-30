@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.tabcompany.libgdx.canyonbunny.game.objects.AbstractGameObject;
 
 public class CameraHelper {
     private static final String TAG = CameraHelper.class.getName();
@@ -14,7 +15,9 @@ public class CameraHelper {
     private Vector2 position;
     private float zoom;
 
-    private Sprite target;
+    //private Sprite target;
+
+    private AbstractGameObject target;
 
     public CameraHelper() {
         position = new Vector2();
@@ -24,8 +27,20 @@ public class CameraHelper {
     public void update(float deltaTime) {
         if (!hasTarget()) return;
 
-        position.x = target.getX() + target.getOriginX();
-        position.y = target.getY() + target.getOriginY();
+        position.x = target.position.x + target.origin.x;
+        position.y = target.position.y + target.origin.y;
+    }
+
+    public void setTarget (AbstractGameObject target) {
+        this.target = target;
+    }
+
+    public AbstractGameObject getTarget () {
+        return target;
+    }
+
+    public boolean hasTarget (AbstractGameObject target) {
+        return hasTarget() && this.target.equals(target);
     }
 
     public void setPosition(float x, float y) {
@@ -48,20 +63,20 @@ public class CameraHelper {
         return zoom;
     }
 
-    public void setTarget(Sprite target) {
-        this.target = target;
-    }
-
-    public Sprite getTarget() {
-        return target;
-    }
+    /*for test*/
+//    public void setTarget(Sprite target) {
+//        this.target = target;
+//    }
+//
+//    public Sprite getTarget() {
+//        return target;
+//    }
+//    public boolean hasTarget(Sprite target) {
+//        return hasTarget() && this.target.equals(target);
+//    }
 
     public boolean hasTarget() {
         return target != null;
-    }
-
-    public boolean hasTarget(Sprite target) {
-        return hasTarget() && this.target.equals(target);
     }
 
     public void applyTo (OrthographicCamera camera) {
