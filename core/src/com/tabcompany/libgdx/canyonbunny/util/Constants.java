@@ -15,4 +15,6 @@ public class Constants {
     public static final String LEVEL_01 = "android/assets/levels/level-01.png";
     // Amount of extra lives at level start
     public static final int LIVES_START = 3;
+    // Duration of feather power-up in seconds
+    public static final float ITEM_FEATHER_POWERUP_DURATION = 9;
 }
