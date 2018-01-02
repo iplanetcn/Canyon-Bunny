@@ -29,17 +29,20 @@ public class CameraHelper {
 
         position.x = target.position.x + target.origin.x;
         position.y = target.position.y + target.origin.y;
+
+        // Prevent camera from moving down too far
+        position.y = Math.max(-1f, position.y);
     }
 
-    public void setTarget (AbstractGameObject target) {
+    public void setTarget(AbstractGameObject target) {
         this.target = target;
     }
 
-    public AbstractGameObject getTarget () {
+    public AbstractGameObject getTarget() {
         return target;
     }
 
-    public boolean hasTarget (AbstractGameObject target) {
+    public boolean hasTarget(AbstractGameObject target) {
         return hasTarget() && this.target.equals(target);
     }
 
@@ -79,7 +82,7 @@ public class CameraHelper {
         return target != null;
     }
 
-    public void applyTo (OrthographicCamera camera) {
+    public void applyTo(OrthographicCamera camera) {
         camera.position.x = position.x;
         camera.position.y = position.y;
         camera.zoom = zoom;
