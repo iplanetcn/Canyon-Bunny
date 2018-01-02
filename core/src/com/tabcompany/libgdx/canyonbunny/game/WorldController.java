@@ -1,6 +1,7 @@
 package com.tabcompany.libgdx.canyonbunny.game;
 
 import com.badlogic.gdx.Application;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
@@ -9,6 +10,7 @@ import com.tabcompany.libgdx.canyonbunny.game.objects.BunnyHead;
 import com.tabcompany.libgdx.canyonbunny.game.objects.Feather;
 import com.tabcompany.libgdx.canyonbunny.game.objects.GoldCoin;
 import com.tabcompany.libgdx.canyonbunny.game.objects.Rock;
+import com.tabcompany.libgdx.canyonbunny.screens.MenuScreen;
 import com.tabcompany.libgdx.canyonbunny.util.CameraHelper;
 
 import com.tabcompany.libgdx.canyonbunny.util.Constants;
@@ -17,30 +19,27 @@ public class WorldController extends InputAdapter {
 
     private static final String TAG = WorldController.class.getName();
 
+    private Game game;
+    public Level level;
+    public int lives;
+    public int score;
+
     public CameraHelper cameraHelper;
 
     // Rectangles for collision detection
     private Rectangle r1 = new Rectangle();
     private Rectangle r2 = new Rectangle();
 
-    /*for test*/
-//    public Sprite[] testSprites;
-//    public int selectedSprite;
-
-    public Level level;
-    public int lives;
-    public int score;
-
     private float timeLeftGameOverDelay;
 
-    public WorldController() {
+    public WorldController(Game game) {
+        this.game = game;
         init();
     }
 
     private void init() {
         Gdx.input.setInputProcessor(this);
         cameraHelper = new CameraHelper();
-        //initTestObjects();
         lives = Constants.LIVES_START;
         timeLeftGameOverDelay = 0;
         initLevel();
@@ -49,83 +48,17 @@ public class WorldController extends InputAdapter {
     private void initLevel() {
         score = 0;
         level = new Level(Constants.LEVEL_01);
+        cameraHelper.setTarget(level.bunnyHead);
     }
-
-    /*for test*/
-//    private void initTestObjects() {
-//        // Create new array for 5 sprites
-//        testSprites = new Sprite[5];
-//
-//        // Create a list of texture regions
-//        Array<TextureRegion> regions = new Array<TextureRegion>();
-//        regions.add(Assets.instance.bunny.head);
-//        regions.add(Assets.instance.feather.feather);
-//        regions.add(Assets.instance.goldCoin.goldCoin);
-//
-//        // Create new sprites using a random texture region
-//        for (int i = 0; i < testSprites.length; i++) {
-//            Sprite spr = new Sprite(regions.random());
-//            // Define sprite size to be 1m x 1m in game world
-//            spr.setSize(1, 1);
-//            // Set origin to sprite's center
-//            spr.setOrigin(spr.getWidth() / 2.0f, spr.getHeight() / 2.0f);
-//            // Calculate random position for sprite
-//            float randomX = MathUtils.random(-2.0f, 2.0f);
-//            float randomY = MathUtils.random(-2.0f, 2.0f);
-//            spr.setPosition(randomX, randomY);
-//            // Put new sprite into array
-//            testSprites[i] = spr;
-//        }
-//        // Set first sprite as selected one
-//        selectedSprite = 0;
-//
-////        // Create empty POT-sized Pixmap with 8 bit RGBA pixel data
-////        int width = 32;
-////        int height = 32;
-////        Pixmap pixmap = createProceduralPixmap(width, height);
-////
-////        // Create a new texture from pixmap data
-////        Texture texture = new Texture(pixmap);
-////
-////        // Create new sprites using the just created texture
-////        for (int i = 0; i < testSprites.length; i++) {
-////            Sprite spr = new Sprite(texture);
-////            // Define sprite size to be 1m x 1m in game world
-////            spr.setSize(1, 1);
-////            // Set origin to sprite's center
-////            spr.setOrigin(spr.getWidth() / 2.0f, spr.getHeight() / 2.0f);
-////            // Calculate random position for sprite
-////            float randomX = MathUtils.random(-2.0f, 2.0f);
-////            float randomY = MathUtils.random(-2.0f, 2.0f);
-////            spr.setPosition(randomX, randomY);
-////            // Put new sprite into array
-////            testSprites[i] = spr;
-////        }
-////        // Set first sprite as selected one
-////        selectedSprite = 0;
-//    }
-
-//    private Pixmap createProceduralPixmap(int width, int height) {
-//        Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
-//        // Fill square with red color at 50% opacity
-//        pixmap.setColor(1, 0, 0, 0.5f);
-//        pixmap.drawLine(0, 0, width, height);
-//        pixmap.drawLine(width, 0, 0, height);
-//        // Draw a cyan-colored border around square
-//        pixmap.setColor(0, 1, 1, 1);
-//        pixmap.drawRectangle(0, 0, width, height);
-//        return pixmap;
-//    }
 
     public void update(float deltaTime) {
         handleDebugInput(deltaTime);
         if (isGameOver()) {
             timeLeftGameOverDelay -= deltaTime;
-            if (timeLeftGameOverDelay < 0) init();
+            if (timeLeftGameOverDelay < 0) backToMenu();
         } else {
             handleInputGame(deltaTime);
         }
-        //updateTestObjects(deltaTime);
         level.update(deltaTime);
         testCollisions();
         cameraHelper.update(deltaTime);
@@ -159,11 +92,11 @@ public class WorldController extends InputAdapter {
         }
 
         // Test collision: Bunny Head <-> Gold Coins
-        for (GoldCoin goldCoin : level.goldcoins) {
-            if (goldCoin.collected) continue;
-            r2.set(goldCoin.position.x, goldCoin.position.y, goldCoin.bounds.width, goldCoin.bounds.height);
+        for (GoldCoin goldcoin : level.goldcoins) {
+            if (goldcoin.collected) continue;
+            r2.set(goldcoin.position.x, goldcoin.position.y, goldcoin.bounds.width, goldcoin.bounds.height);
             if (!r1.overlaps(r2)) continue;
-            onCollisionBunnyWithGoldCoin(goldCoin);
+            onCollisionBunnyWithGoldCoin(goldcoin);
             break;
         }
 
@@ -219,14 +152,6 @@ public class WorldController extends InputAdapter {
 
     private void handleDebugInput(float deltaTime) {
         if (Gdx.app.getType() != Application.ApplicationType.Desktop) return;
-
-        /*for test*/
-        // Selected Sprite Controls
-//        float sprMoveSpeed = 5 * deltaTime;
-//        if (Gdx.input.isKeyPressed(Keys.A)) moveSelectedSprite(-sprMoveSpeed, 0);
-//        if (Gdx.input.isKeyPressed(Keys.D)) moveSelectedSprite(sprMoveSpeed, 0);
-//        if (Gdx.input.isKeyPressed(Keys.W)) moveSelectedSprite(0, sprMoveSpeed);
-//        if (Gdx.input.isKeyPressed(Keys.S)) moveSelectedSprite(0, -sprMoveSpeed);
 
         if (!cameraHelper.hasTarget(level.bunnyHead)) {
             /* Camera Controls (move)*/
@@ -289,40 +214,15 @@ public class WorldController extends InputAdapter {
             cameraHelper.setTarget(cameraHelper.hasTarget() ? null : level.bunnyHead);
             Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
         }
-
-        /*for test*/
-        // Select next sprite
-//        else if (keycode == Keys.SPACE) {
-//            selectedSprite = (selectedSprite + 1) % testSprites.length;
-//            // Update camera's target to follow the currently selected sprite
-//            if (cameraHelper.hasTarget()) {
-//                cameraHelper.setTarget(testSprites[selectedSprite]);
-//            }
-//            Gdx.app.debug(TAG, "Sprite #" + selectedSprite + " selected");
-//        }
-        // Toggle camera follow
-//        else if (keycode == Keys.ENTER) {
-//            cameraHelper.setTarget(cameraHelper.hasTarget() ? null : testSprites[selectedSprite]);
-//            Gdx.app.debug(TAG, "Camera follow enabled: " + cameraHelper.hasTarget());
-//        }
+        // Back to Menu
+        else if (keycode == Keys.ESCAPE || keycode == Keys.BACK) {
+            backToMenu();
+        }
         return false;
     }
 
-    /*for test*/
-//    private void moveSelectedSprite(float x, float y) {
-//        testSprites[selectedSprite].translate(x, y);
-//    }
-
-
-    //for test
-//    private void updateTestObjects(float deltaTime) {
-//        // Get current rotation from selected sprite
-//        float rotation = testSprites[selectedSprite].getRotation();
-//        // Rotate sprite by 90 degrees per second
-//        rotation += 90 * deltaTime;
-//        // Wrap around at 360 degrees
-//        rotation %= 360;
-//        // Set new rotation value to selected sprite
-//        testSprites[selectedSprite].setRotation(rotation);
-//    }
+    private void backToMenu() {
+        // switch to menu screen
+        game.setScreen(new MenuScreen(game));
+    }
 }
