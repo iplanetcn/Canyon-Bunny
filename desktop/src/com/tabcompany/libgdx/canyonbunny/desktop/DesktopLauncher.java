@@ -17,10 +17,13 @@ public class DesktopLauncher {
 			Settings settings = new Settings();
 			settings.maxWidth = 1024;
 			settings.maxHeight = 1024;
-			settings.duplicatePadding = false;
+			//settings.duplicatePadding = false;
 			settings.debug = drawDebugOutline;
-			TexturePacker.process(settings, "desktop\\assets-raw\\images", "android\\assets\\images",
+			TexturePacker.process(settings, "assets-raw/images", "images",
 					"canyonbunny");
+			TexturePacker.process(settings, "assets-raw/images-ui",
+					"images",
+					"canyonbunny-ui");
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
