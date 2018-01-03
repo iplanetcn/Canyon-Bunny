@@ -56,7 +56,7 @@ public class MenuScreen extends AbstractGameScreen {
 
     // debug
     private final float DEBUG_REBUILD_INTERVAL = 5.0f;
-    private boolean debugEnabled = true;
+    private boolean debugEnabled = false;
     private float debugRebuildStage;
 
     public MenuScreen(Game game) {
@@ -80,7 +80,7 @@ public class MenuScreen extends AbstractGameScreen {
         stage.act(deltaTime);
         stage.draw();
 //        Table.drawDebug(stage);
-        stage.setDebugAll(true);
+        stage.setDebugAll(debugEnabled);
     }
 
     @Override
