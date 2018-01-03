@@ -69,6 +69,7 @@ public class WorldController extends InputAdapter {
             else
                 initLevel();
         }
+        level.mountains.updateScrollPosition(cameraHelper.getPosition());
     }
 
     public boolean isGameOver() {
