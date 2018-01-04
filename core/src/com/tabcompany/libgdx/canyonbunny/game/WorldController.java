@@ -10,6 +10,7 @@ import com.tabcompany.libgdx.canyonbunny.game.objects.BunnyHead;
 import com.tabcompany.libgdx.canyonbunny.game.objects.Feather;
 import com.tabcompany.libgdx.canyonbunny.game.objects.GoldCoin;
 import com.tabcompany.libgdx.canyonbunny.game.objects.Rock;
+import com.tabcompany.libgdx.canyonbunny.screens.DirectedGame;
 import com.tabcompany.libgdx.canyonbunny.screens.MenuScreen;
 import com.tabcompany.libgdx.canyonbunny.util.CameraHelper;
 
@@ -19,7 +20,7 @@ public class WorldController extends InputAdapter {
 
     private static final String TAG = WorldController.class.getName();
 
-    private Game game;
+    private DirectedGame game;
     public Level level;
     public int lives;
     public int score;
@@ -35,13 +36,12 @@ public class WorldController extends InputAdapter {
     public float livesVisual;
     public float scoreVisual;
 
-    public WorldController(Game game) {
+    public WorldController(DirectedGame game) {
         this.game = game;
         init();
     }
 
     private void init() {
-        Gdx.input.setInputProcessor(this);
         cameraHelper = new CameraHelper();
         lives = Constants.LIVES_START;
         livesVisual = lives;

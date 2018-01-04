@@ -2,6 +2,7 @@ package com.tabcompany.libgdx.canyonbunny.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.tabcompany.libgdx.canyonbunny.game.WorldController;
 import com.tabcompany.libgdx.canyonbunny.game.WorldRenderer;
@@ -15,7 +16,7 @@ public class GameScreen extends AbstractGameScreen {
 
     private boolean paused;
 
-    public GameScreen(Game game) {
+    public GameScreen(DirectedGame game) {
         super(game);
     }
 
@@ -57,6 +58,11 @@ public class GameScreen extends AbstractGameScreen {
     @Override
     public void pause() {
         paused = true;
+    }
+
+    @Override
+    public InputProcessor getInputProcessor() {
+        return worldController;
     }
 
     @Override

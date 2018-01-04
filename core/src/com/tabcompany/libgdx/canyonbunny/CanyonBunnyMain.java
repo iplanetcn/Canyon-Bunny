@@ -1,13 +1,13 @@
 package com.tabcompany.libgdx.canyonbunny;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.tabcompany.libgdx.canyonbunny.game.Assets;
+import com.tabcompany.libgdx.canyonbunny.screens.DirectedGame;
 import com.tabcompany.libgdx.canyonbunny.screens.MenuScreen;
 
-public class CanyonBunnyMain extends Game {
+public class CanyonBunnyMain extends DirectedGame {
 
     @Override
     public void create() {
