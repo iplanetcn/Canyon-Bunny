@@ -1,6 +1,5 @@
 package com.tabcompany.libgdx.canyonbunny.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -27,6 +26,8 @@ import com.tabcompany.libgdx.canyonbunny.game.Assets;
 import com.tabcompany.libgdx.canyonbunny.util.CharacterSkin;
 import com.tabcompany.libgdx.canyonbunny.util.Constants;
 import com.tabcompany.libgdx.canyonbunny.util.GamePreferences;
+import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransition;
+import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransitionFade;
 
 public class MenuScreen extends AbstractGameScreen {
     private static final String TAG = MenuScreen.class.getName();
@@ -339,7 +340,8 @@ public class MenuScreen extends AbstractGameScreen {
     }
 
     private void onPlayClicked() {
-        game.setScreen(new GameScreen(game));
+        ScreenTransition transition = ScreenTransitionFade.init(0.75f);
+        game.setScreen(new GameScreen(game), transition);
     }
 
     private void onOptionsClicked() {
