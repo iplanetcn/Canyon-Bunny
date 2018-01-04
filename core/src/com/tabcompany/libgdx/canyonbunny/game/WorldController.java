@@ -1,11 +1,11 @@
 package com.tabcompany.libgdx.canyonbunny.game;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Interpolation;
 import com.tabcompany.libgdx.canyonbunny.game.objects.BunnyHead;
 import com.tabcompany.libgdx.canyonbunny.game.objects.Feather;
 import com.tabcompany.libgdx.canyonbunny.game.objects.GoldCoin;
@@ -13,6 +13,8 @@ import com.tabcompany.libgdx.canyonbunny.game.objects.Rock;
 import com.tabcompany.libgdx.canyonbunny.screens.DirectedGame;
 import com.tabcompany.libgdx.canyonbunny.screens.MenuScreen;
 import com.tabcompany.libgdx.canyonbunny.util.CameraHelper;
+import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransition;
+import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransitionSlide;
 
 import com.tabcompany.libgdx.canyonbunny.util.Constants;
 
@@ -233,6 +235,8 @@ public class WorldController extends InputAdapter {
 
     private void backToMenu() {
         // switch to menu screen
-        game.setScreen(new MenuScreen(game));
+        ScreenTransition transition = ScreenTransitionSlide.init(0.75f,
+                ScreenTransitionSlide.DOWN, false, Interpolation.bounceOut);
+        game.setScreen(new MenuScreen(game), transition);
     }
 }
