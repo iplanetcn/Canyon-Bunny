@@ -9,6 +9,8 @@ import com.tabcompany.libgdx.canyonbunny.screens.DirectedGame;
 import com.tabcompany.libgdx.canyonbunny.screens.MenuScreen;
 import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransition;
 import com.tabcompany.libgdx.canyonbunny.screens.transitions.ScreenTransitionSlice;
+import com.tabcompany.libgdx.canyonbunny.util.AudioManager;
+import com.tabcompany.libgdx.canyonbunny.util.GamePreferences;
 
 public class CanyonBunnyMain extends DirectedGame {
 
@@ -18,6 +20,9 @@ public class CanyonBunnyMain extends DirectedGame {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         // Load assets
         Assets.instance.init(new AssetManager());
+        // Load preferences for audio settings and start playing music
+        GamePreferences.instance.load();
+        AudioManager.instance.play(Assets.instance.music.song01);
         // Start game at menu screen
         ScreenTransition transition = ScreenTransitionSlice.init(2,
                 ScreenTransitionSlice.UP_DOWN, 10, Interpolation.pow5Out);
