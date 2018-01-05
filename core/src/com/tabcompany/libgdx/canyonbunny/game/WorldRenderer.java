@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.tabcompany.libgdx.canyonbunny.util.Constants;
@@ -12,11 +13,17 @@ import com.tabcompany.libgdx.canyonbunny.util.GamePreferences;
 
 public class WorldRenderer implements Disposable {
 
+    private static final String TAG = WorldRenderer.class.getName();
+
+    private static final boolean DEBUG_DRAW_BOX2D_WORLD = false;
+
     private OrthographicCamera camera;
     private OrthographicCamera cameraGUI;
 
     private SpriteBatch batch;
     private WorldController worldController;
+
+    private Box2DDebugRenderer b2debugRenderer;
 
     public WorldRenderer(WorldController worldController) {
         this.worldController = worldController;
@@ -34,6 +41,7 @@ public class WorldRenderer implements Disposable {
         cameraGUI.position.set(0, 0, 0);
         cameraGUI.setToOrtho(true); // flip y-axis
         cameraGUI.update();
+        b2debugRenderer = new Box2DDebugRenderer();
     }
 
     public void resize(int width, int height) {
@@ -52,23 +60,15 @@ public class WorldRenderer implements Disposable {
         renderGui(batch);
     }
 
-    /*for test*/
-//    private void renderTestObjects() {
-//        worldController.cameraHelper.applyTo(camera);
-//        batch.setProjectionMatrix(camera.combined);
-//        batch.begin();
-//        for (Sprite sprite : worldController.testSprites){
-//            sprite.draw(batch);
-//        }
-//        batch.end();
-//    }
-
     private void renderWorld(SpriteBatch batch) {
         worldController.cameraHelper.applyTo(camera);
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         worldController.level.render(batch);
         batch.end();
+        if (DEBUG_DRAW_BOX2D_WORLD) {
+            b2debugRenderer.render(worldController.b2world, camera.combined);
+        }
     }
 
     private void renderGuiScore(SpriteBatch batch) {
