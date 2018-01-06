@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -111,11 +113,6 @@ public class MenuScreen extends AbstractGameScreen {
     @Override
     public void pause() {
 
-    }
-
-    @Override
-    public InputProcessor getInputProcessor() {
-        return stage;
     }
 
     private void rebuildStage() {
@@ -355,7 +352,7 @@ public class MenuScreen extends AbstractGameScreen {
         // Make options window slightly transparent
         winOptions.setColor(1, 1, 1, 0.8f);
         // Hide options window by default
-        winOptions.setVisible(false);
+        showOptionsWindow(false, false);
         if (debugEnabled) winOptions.debug();
         // Let TableLayout recalculate widget sizes and positions
         winOptions.pack();
@@ -371,9 +368,8 @@ public class MenuScreen extends AbstractGameScreen {
 
     private void onOptionsClicked() {
         loadSettings();
-        btnMenuPlay.setVisible(false);
-        btnMenuOptions.setVisible(false);
-        winOptions.setVisible(true);
+        showMenuButtons(false);
+        showOptionsWindow(true, true);
     }
 
     private void onSaveClicked() {
@@ -383,9 +379,8 @@ public class MenuScreen extends AbstractGameScreen {
     }
 
     private void onCancelClicked() {
-        btnMenuPlay.setVisible(true);
-        btnMenuOptions.setVisible(true);
-        winOptions.setVisible(false);
+        showMenuButtons(true);
+        showOptionsWindow(false, true);
         AudioManager.instance.onSettingsUpdated();
     }
 
@@ -417,6 +412,44 @@ public class MenuScreen extends AbstractGameScreen {
         prefs.showFpsCounter = chkShowFpsCounter.isChecked();
         prefs.useMonochromeShader = chkUseMonochromeShader.isChecked();
         prefs.save();
+    }
+
+    private void showMenuButtons(boolean visible) {
+        float moveDuration = 1.0f;
+        Interpolation moveEasing = Interpolation.swing;
+        float delayOptionsButton = 0.25f;
+
+        float moveX = 300 * (visible ? -1 : 1);
+        float moveY = 0 * (visible ? -1 : 1);
+        final Touchable touchEnabled = visible ? Touchable.enabled : Touchable.disabled;
+        btnMenuPlay.addAction(moveBy(moveX, moveY, moveDuration, moveEasing));
+        btnMenuOptions.addAction(sequence(delay(delayOptionsButton),
+                moveBy(moveX, moveY, moveDuration, moveEasing)));
+
+        SequenceAction seq = sequence();
+        if (visible)
+            seq.addAction(delay(delayOptionsButton + moveDuration));
+        seq.addAction(run(new Runnable() {
+            @Override
+            public void run() {
+                btnMenuPlay.setTouchable(touchEnabled);
+                btnMenuOptions.setTouchable(touchEnabled);
+            }
+        }));
+        stage.addAction(seq);
+    }
+
+    private void showOptionsWindow(boolean visible, boolean animated) {
+        float alphaTo = visible ? 0.8f : 0.0f;
+        float duration = animated ? 1.0f : 0.0f;
+        Touchable touchEnabled = visible ? Touchable.enabled : Touchable.disabled;
+        winOptions.addAction(sequence(touchable(touchEnabled),
+                alpha(alphaTo, duration)));
+    }
+
+    @Override
+    public InputProcessor getInputProcessor() {
+        return stage;
     }
 
 }
