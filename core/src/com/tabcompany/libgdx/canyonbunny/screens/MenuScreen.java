@@ -1,5 +1,8 @@
 package com.tabcompany.libgdx.canyonbunny.screens;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.*;
+
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
@@ -153,11 +156,26 @@ public class MenuScreen extends AbstractGameScreen {
         // + Coins
         imgCoins = new Image(skinCanyonBunny, "coins");
         layer.addActor(imgCoins);
-        imgCoins.setPosition(135, 80);
+        imgCoins.setOrigin(imgCoins.getWidth() / 2, imgCoins.getHeight() / 2);
+        imgCoins.addAction(sequence(
+                moveTo(135, -20),
+                scaleTo(0, 0),
+                fadeOut(0),
+                delay(2.5f),
+                parallel(moveBy(0, 100, 0.5f, Interpolation.swingOut),
+                        scaleTo(1.0f, 1.0f, 0.25f, Interpolation.linear),
+                        alpha(1.0f, 0.5f))
+        ));
         // + Bunny
         imgBunny = new Image(skinCanyonBunny, "bunny");
         layer.addActor(imgBunny);
-        imgBunny.setPosition(355, 40);
+        imgBunny.addAction(sequence(
+                moveTo(655, 510),
+                delay(4.0f),
+                moveBy(-70, -100, 0.5f, Interpolation.fade),
+                moveBy(-100, -50, 0.5f, Interpolation.fade),
+                moveBy(-150, -300, 1.0f, Interpolation.elasticIn)
+        ));
         return layer;
     }
 
